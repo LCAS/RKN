@@ -1,0 +1,82 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+
+#user specific pydev project settings
+.pydevproject
+.project
+.settings
+
+# Ignore python rope directories
+.ropeproject
+
+# Ignore IntelliJ project folder
+.idea
+*/.idea
+
+n_link_sim/forwardModels/QuadLinkForwardModel.py
+n_link_sim/forwardModels/QuadLinkForwardModel_wrap.c
+n_link_sim/forwardModels/DoubleLinkForwardModel.py
+n_link_sim/forwardModels/DoubleLinkForwardModel_wrap.c
+n_link_sim/dist
+n_link_sim/build
+n_link_sim/N_Link_Simulator.egg-info

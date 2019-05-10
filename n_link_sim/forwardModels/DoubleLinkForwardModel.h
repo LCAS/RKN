@@ -1,0 +1,13 @@
+void simulate(double *xValues, int numSamples, int dim_states,
+              double *u_t, int num_actions, int dim_actions,
+              double dt,
+              double *m_t, int dim_m,
+              double *l_t, int dim_l,
+              double *I_t, int dim_I,
+              double g,
+              double *k_t, int dim_k,
+              double dst,
+              int use_gains,
+              double *PDSetPoints, int dim_sp,
+              double *PDGains, int dim_gains,
+              double *outArray, int num_out, int dim_out);

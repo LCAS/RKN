@@ -5,7 +5,7 @@ from network import NConvolutionalHiddenLayers, NDenseHiddenLayers, HiddenLayerW
 from network import SimpleOutputLayer, GaussianOutputLayer, UpConvOutputLayer, FixedOutputLayer
 from network.LinearDecoder import LinearDecoder, FixedLinearDecoder
 from util import MeanCovarPacker as mcp
-from transition_cell import TransitionCell, RKNSimpleTransitionCell, RKNCorrTransitionCell, RKNFullTransitionCell
+from transition_cell import TransitionCell, RKNCorrTransitionCell
 from util import GPUUtil as gpu_util
 from util import LossFunctions as loss_fn
 

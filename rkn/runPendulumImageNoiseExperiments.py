@@ -6,14 +6,9 @@ from data.MultiplePendulumData import MultiplePendulums
 from config.PendulumImageNoiseConfig import PendulumImageNoiseConfig
 from model import RKN, RKNRunner
 from baselines import LSTMBaseline, LSTMBaselineRunner, GRUBaseline, GRUBaselineRunner
-from model_local_linear.LLRKNFull import LLRKNFull
 from model_local_linear import LLRKN
-from model_local_linear.FFLLRKN import FFLLRKN, FFLLRKNBasis
-from model_local_linear.LLRKNFactorized import LLRKNFactorized, LLRKNFactorizedBasis
 
 from plotting import PendulumPlotter
-from plotting.VideoGeneration import VideoGeneration
-from util import AngularRepresentation as ar
 
 """ For developing - overwrites flags!"""
 # Todo remove before "release"

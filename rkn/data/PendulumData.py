@@ -1,10 +1,9 @@
 import numpy as np
 from PIL import Image
 from PIL import ImageDraw
-from pykalman import UnscentedKalmanFilter
 import data.ImgNoiseGeneration as noise_gen
 
-#Todo save and load
+
 class Pendulum:
 
     MAX_VELO_KEY = 'max_velo'
@@ -39,7 +38,8 @@ class Pendulum:
         self.observation_mode = observation_mode
 
         self.random = np.random.RandomState(seed)
-         # image parameters
+
+        # image parameters
         self.img_size_internal = 128
         self.x0 = self.y0 = 64
         self.plt_length = 55 if self.observation_mode == Pendulum.OBSERVATION_MODE_LINE else 50
@@ -66,11 +66,6 @@ class Pendulum:
         self.tranisition_covar_mat = np.diag(np.array([1e-8, self.transition_noise_std**2, 1e-8, 1e-8]))
         self.observation_covar_mat = np.diag([self.observation_noise_std**2, self.observation_noise_std**2])
 
-        #obs_fn = self._kf_observation_function_ball if self.observation_mode == Pendulum.OBSERVATION_MODE_BALL else self._kf_observation_function_line
-        self.ukf = UnscentedKalmanFilter(transition_functions=self._kf_transition_function_ball,
-                                         observation_functions=self._kf_observation_function_ball,
-                                         transition_covariance=self.tranisition_covar_mat,
-                                         observation_covariance=self.observation_covar_mat)
 
     def sample_data_set(self, num_episodes, episode_length, full_targets, seed=None):
         if seed is not None:
@@ -170,28 +165,6 @@ class Pendulum:
     def add_observation_noise(self, imgs, first_n_clean, r=0.2, t_ll=0.1, t_lu=0.4, t_ul=0.6, t_uu=0.9):
         return noise_gen.add_img_noise(imgs, first_n_clean, self.random, r, t_ll, t_lu, t_ul, t_uu)
 
-#    def _generateLine(self, x1, y1):
-#        # 'L' = 8 Bit Grayscale
-#        img = Image.new('F', (self.img_size_internal, self.img_size_internal), 0.0)
-#        draw = ImageDraw.Draw(img)
-
-#        draw.line([(self.x0, self.img_size_internal - self.y0), (x1, self.img_size_internal - y1)], fill=1.0, width=self.plt_width, )
-#        img = img.resize((self.img_size, self.img_size), resample=Image.ANTIALIAS)
-#        img_as_array = np.asarray(img)
-#        img_as_array = np.clip(img_as_array, 0, 1)
-#        return img_as_array
-
-#    def _generateEE(self, x1, y1):
-#        img = Image.new('F', (self.img_size_internal, self.img_size_internal), 0.0)
-#        draw = ImageDraw.Draw(img)
-
-#        img = img.resize((self.img_size, self.img_size), resample=Image.ANTIALIAS)
-#        img_as_array = np.asarray(img)
-#        img_as_array = np.clip(img_as_array, 0, 1)
-#        return img_as_array
-
-
-
     def _get_task_space_pos(self, joint_states):
         task_space_pos = np.zeros(list(joint_states.shape[:-1]) + [2])
         task_space_pos[..., 0] = np.sin(joint_states[..., 0]) * self.length
@@ -269,53 +242,12 @@ class Pendulum:
         return np.concatenate([theta, theta_dot_outer * theta_dot_inner], axis=-1)
 
 
-    def inverse_pendulum_kinematics_single(self, ts):
-        x, y, x_dot, y_dot = ts
-        val = x / y
-        theta = np.arctan2(x, y)
-        theta_dot_outer = 1 / (1 + val**2)
-        theta_dot_inner = (x_dot * y - y_dot * x) / y**2
-        return np.array([theta, theta_dot_outer * theta_dot_inner])
-
-    def _kf_transition_function_ball(self, state, noise):
-        js = self.inverse_pendulum_kinematics_single(state)
-        js[0] += np.pi
-        next_js = self._kf_transition_function(js, noise[:2])
-        next_js[0] -= np.pi
-        return self.pendulum_kinematic_single(next_js)
-        #return np.array([np.sin(next_angle[0]), np.cos(next_angle[0])]) * self.length
-
-    def _kf_observation_function_ball(self, state, noise):
-        return state[:2] + noise
-
-    def _kf_observation_function_line(self, state, noise):
-        return state[0:1] + noise[0:1]
-
 if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-
-
-    def nll(prediction, target, variance):
-        element_wise_ll = 0.5 * (((prediction - target) ** 2) / variance + np.log(variance) + np.log(2 * np.pi))
-        sample_wise_ll = np.sum(element_wise_ll, axis=-1)
-        return np.mean(sample_wise_ll)
-
-    def full_nll(prediction, target, variance):
-        dim = prediction.shape[-1]
-        constant_term = dim * np.log(2 * np.pi)
-        reg_term = np.log(np.linalg.det(variance))
-        diff = prediction - target
-        loss_term = np.tensordot(diff, np.linalg.solve(variance, diff), axes=[[2], [2]])
-        return np.mean(0.5 * (constant_term + reg_term + loss_term))
-
-    def rmse(prediction, target):
-        return np.sqrt(np.mean((prediction - target)**2))
 
     img_size = 24
 
     pend_params = Pendulum.pendulum_default_params()
     pend_params[Pendulum.FRICTION_KEY] = 0.1
-
 
     data = Pendulum(img_size=img_size,
                     observation_mode=Pendulum.OBSERVATION_MODE_LINE,
@@ -328,13 +260,6 @@ if __name__ == '__main__':
     noisy_samples, factors = data.add_observation_noise(samples, 0)
 
     np.savez("pend_test", images=samples)
-
-    #for i in range(samples.shape[0]):
-    #    print("New Episode")
-    #    for j in range(samples.shape[1]):
-    #        plt.imshow(samples[i, j], cmap="gray", interpolation="none")
-    #        plt.pause(.01)
-    #        plt.clf()
 
 
     print("test")

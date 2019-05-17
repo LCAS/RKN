@@ -1,5 +1,4 @@
 Simulators for double and quad link pendulum. 
-Extracted from the pypost environment package
 
 ## Prerequisites
 Swig (and something that compiles C programs (only tested with gcc 5.4))

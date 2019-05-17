@@ -39,7 +39,8 @@ def add_img_noise(imgs, first_n_clean, random, r=0.2, t_ll=0.0, t_lu=0.25, t_ul=
             noise = random.uniform(low=0.0, high=1.1, size=imgs.shape[1:])
             noisy_imgs.append(factors[i] * imgs[i] + (1 - factors[i]) * noise)
 
-    return np.squeeze(np.concatenate([np.expand_dims(n ,0) for n in noisy_imgs], 0)), factors
+    return np.squeeze(np.concatenate([np.expand_dims(n, 0) for n in noisy_imgs], 0)), factors
+
 
 def add_img_noise4(imgs, first_n_clean, random, r=0.2, t_ll=0.0, t_lu=0.25, t_ul=0.75, t_uu=1.0):
     """
@@ -100,8 +101,8 @@ def add_img_noise4(imgs, first_n_clean, random, r=0.2, t_ll=0.0, t_lu=0.25, t_ul
             for k in range(3):
                 f[i, j, k] = factors_ext[i, j, q[i, j, k]]
 
-
     return np.squeeze(np.concatenate([np.expand_dims(n ,0) for n in noisy_imgs], 0)), f
+
 
 def detect_pendulums(imgs, half_x, half_y):
     qs = [imgs[:, :half_x, :half_y], imgs[:, :half_x, half_y:], imgs[:, half_x:, :half_y], imgs[:, half_x:, half_y:]]
@@ -112,15 +113,10 @@ def detect_pendulums(imgs, half_x, half_y):
 
     cts = np.concatenate([np.expand_dims(c, 1) for c in [r_cts, g_cts, b_cts]], 1)
 
-
     q_max = np.max(cts, -1)
     q = np.argmax(cts, -1)
     q[q_max < 10] = 4
     return q
-
-
-
-
 
 
 if __name__ == "__main__":
@@ -131,14 +127,14 @@ if __name__ == "__main__":
     imgs = np.ones([200, 150, 1, 1, 1])
 
     # r smaller -> samples more correlated over time
-    _, factors = add_img_noise(imgs, first_n_clean=0, random=random,
-                               r=0.2, t_ll=0.1, t_lu=0.4, t_ul=0.6, t_uu=0.9)
+    _, noise_factors = add_img_noise(imgs, first_n_clean=0, random=random,
+                                     r=0.2, t_ll=0.1, t_lu=0.4, t_ul=0.6, t_uu=0.9)
 
     # Distribution over all sampled factors as histogram
     plt.figure()
-    plt.hist(np.ravel(factors), bins=50, normed=True)
+    plt.hist(np.ravel(noise_factors), bins=50, normed=True)
 
     # Factors for first 5 sequences over time
     plt.figure()
-    plt.plot(np.squeeze(factors)[:5].T)
+    plt.plot(np.squeeze(noise_factors)[:5].T)
     plt.show()

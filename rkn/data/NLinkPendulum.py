@@ -1,8 +1,8 @@
 import _DoubleLinkForwardModel as DoubleLink
 import _QuadLinkForwardModel as QuadLink
 import numpy as np
-#import data.ImgNoiseGeneration as noise_gen
-import data.ImgNoiseGeneration_harit_v4 as noise_gen
+import data.ImgNoiseGeneration as noise_gen
+#import data.ImgNoiseGeneration_harit_v4 as noise_gen
 from PIL import Image
 from PIL import ImageDraw
 

@@ -134,7 +134,7 @@ class RKN(k.models.Model):
         :param pred_mean_var: mean and covar (as concatenated vector, as provided by model)
         :return: root mean squared error between targets and predicted mean, predicted variance is ignored
         """
-        pred_mean = pred_mean_var[..., self._output_dim:], pred_mean_var[..., :self._output_dim]
+        pred_mean = pred_mean_var[..., :self._output_dim]
         return tf.sqrt(tf.reduce_mean((pred_mean - target) ** 2))
 
     def bernoulli_nll(self, targets, predictions, uint8_targets=False):

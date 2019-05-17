@@ -1,7 +1,7 @@
 Simulators for double and quad link pendulum. 
 
 ## Prerequisites
-Swig (and something that compiles C programs (only tested with gcc 5.4))
+Swig (and something that compiles c code)
 
 ## Install
 

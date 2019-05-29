@@ -69,6 +69,10 @@ test_obs, test_obs_valid, test_targets = generate_imputation_data_set(data, 250,
 # Build Model
 rkn = PendulumImageImputationRKN(latent_observation_dim=15, output_dim=train_targets.shape[-3:],
                                  num_basis=15, bandwidth=3, never_invalid=False)
+input1=k.layers.Input(shape=(None,)+train_obs.shape[2:])#specify input dimensions, None indicating variable timestep size
+input2=k.layers.Input(shape=(None,1)) #specify input dimensions, None indicating variable timestep size
+inputs=(input1,input2) #multi inputs passed as tuple
+rkn(inputs)
 
 rkn.compile(optimizer=k.optimizers.Adam(clipnorm=5.0),
             loss=lambda t, p: rkn.bernoulli_nll(t, p, uint8_targets=True))

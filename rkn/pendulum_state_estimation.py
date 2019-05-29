@@ -52,6 +52,8 @@ test_obs, test_targets = generate_pendulum_filter_dataset(data, 25, 150, 12312)
 
 # Build Model
 rkn = PendulumStateEstemRKN(latent_observation_dim=15, output_dim=2, num_basis=15, bandwidth=3, never_invalid=True)
+inputs=k.layers.Input(shape=(None,)+train_obs.shape[2:]) #specify input dimensions, None indicating variable timestep size
+rkn(inputs=inputs) 
 rkn.compile(optimizer=k.optimizers.Adam(clipnorm=5.0), loss=rkn.gaussian_nll, metrics=[rkn.rmse])
 
 # Train Model

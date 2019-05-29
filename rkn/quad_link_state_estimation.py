@@ -52,6 +52,8 @@ test_obs, test_targets = n_link.test_images, n_link.to_sc_representation(n_link.
 
 # Build Model
 rkn = QuadLinkStateEstemRKN(latent_observation_dim=100, output_dim=8, num_basis=15, bandwidth=3, never_invalid=True)
+inputs=k.layers.Input(shape=(None,)+train_obs.shape[2:]) #specify input dimensions, None indicating variable timestep size
+rkn(inputs=inputs) 
 rkn.compile(optimizer=k.optimizers.Adam(clipnorm=5.0), loss=rkn.gaussian_nll, metrics=[rkn.rmse])
 
 # Train Model

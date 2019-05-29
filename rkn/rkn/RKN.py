@@ -6,8 +6,10 @@ from rkn.RKNTransitionCell import RKNTransitionCell, pack_input, unpack_state
 
 class RKN(k.models.Model):
 
-    def __init__(self, latent_observation_dim, output_dim, num_basis, bandwidth, never_invalid=False):
+    def __init__(self, observation_shape, latent_observation_dim, output_dim, num_basis, bandwidth,
+                 never_invalid=False):
         """
+        :param observation_shape: shape of the observation to work with
         :param latent_observation_dim: latent observation dimension (m in paper)
         :param output_dim: dimensionality of model output
         :param num_basis: number of basis matrices (k in paper)
@@ -17,6 +19,7 @@ class RKN(k.models.Model):
         """
         super().__init__()
 
+        self._obs_shape = observation_shape
         self._lod = latent_observation_dim
         self._lsd = 2 * self._lod
         self._output_dim = output_dim
@@ -57,6 +60,18 @@ class RKN(k.models.Model):
             self._layer_dec_out = k.layers.TimeDistributed(
                 k.layers.Conv2DTranspose(self._output_dim[-1], kernel_size=3, padding="same",
                                          activation=k.activations.sigmoid))
+
+        # To ensure the time sequence length remains unknown and the model can be used with varying sequence lengths
+        if isinstance(observation_shape, list):
+            in_shape = [None] + observation_shape
+        elif isinstance(observation_shape, tuple):
+            in_shape = (None, ) + observation_shape
+        elif np.isscalar(observation_shape):
+            in_shape = [None, observation_shape]
+        else:
+            raise AssertionError("observation shape needs to be either list, tuple or scalar")
+        inputs = k.layers.Input(shape=in_shape)
+        self(inputs)
 
     def build_encoder_hidden(self):
         """

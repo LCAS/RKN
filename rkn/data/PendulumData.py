@@ -66,7 +66,6 @@ class Pendulum:
         self.tranisition_covar_mat = np.diag(np.array([1e-8, self.transition_noise_std**2, 1e-8, 1e-8]))
         self.observation_covar_mat = np.diag([self.observation_noise_std**2, self.observation_noise_std**2])
 
-
     def sample_data_set(self, num_episodes, episode_length, full_targets, seed=None):
         if seed is not None:
             self.random.seed(seed)

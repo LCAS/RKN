@@ -51,7 +51,8 @@ train_obs, train_targets = n_link.train_images, n_link.to_sc_representation(n_li
 test_obs, test_targets = n_link.test_images, n_link.to_sc_representation(n_link.test_angles)
 
 # Build Model
-rkn = QuadLinkStateEstemRKN(latent_observation_dim=100, output_dim=8, num_basis=15, bandwidth=3, never_invalid=True)
+rkn = QuadLinkStateEstemRKN(observation_shape=train_obs.shape[-3:], latent_observation_dim=100, output_dim=8, num_basis=15,
+                            bandwidth=3, never_invalid=True)
 rkn.compile(optimizer=k.optimizers.Adam(clipnorm=5.0), loss=rkn.gaussian_nll, metrics=[rkn.rmse])
 
 # Train Model

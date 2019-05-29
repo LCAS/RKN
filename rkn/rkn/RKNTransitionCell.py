@@ -243,7 +243,7 @@ class RKNTransitionCell(k.layers.Layer):
         self._trans_covar_upper = trans_covar[:, :self._lod]
         self._trans_covar_lower = trans_covar[:, self._lod:]
 
-        print(self._trainable_weights)
+        super().build(input_shape)
 
     def call(self, inputs, states, **kwargs):
         """Performs one transition step (prediction followed by update in Kalman Filter terms)

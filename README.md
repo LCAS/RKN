@@ -26,6 +26,7 @@ Currently Implemented:
   - Pendulum State Estimation (Implemented and verified that the ICML results are reproduced)
   - Pendulum Image Imputation (Implemented and verified that the ICML results are reproduced)
   - Quad Link State Estimation (Implemented)
+  - Quad Link Image Imputation (Implemented)
 
 
 ## Dependencies

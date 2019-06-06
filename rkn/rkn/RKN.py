@@ -71,7 +71,11 @@ class RKN(k.models.Model):
         else:
             raise AssertionError("observation shape needs to be either list, tuple or scalar")
         inputs = k.layers.Input(shape=in_shape)
-        self(inputs)
+        if self._never_invalid:
+            self(inputs)
+        else:
+            obs_val = k.layers.Input(shape=(None, 1))
+            self((inputs, obs_val))
 
     def build_encoder_hidden(self):
         """

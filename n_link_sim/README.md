@@ -5,4 +5,4 @@ Swig (and something that compiles c code)
 
 ## Install
 
-Run 'sudo pip3 install setup.py' or 'pip3 install --user setup.py' - swig takes care of everything
+Run 'sudo python3 setup.py install' or 'python3 setup.py install --user' - swig takes care of everything

@@ -7,15 +7,17 @@ from rkn.RKNTransitionCell import RKNTransitionCell, pack_input, unpack_state
 class RKN(k.models.Model):
 
     def __init__(self, observation_shape, latent_observation_dim, output_dim, num_basis, bandwidth,
-                 never_invalid=False):
+                 trans_net_hidden_units=[], never_invalid=False, cell_type="rkn"):
         """
         :param observation_shape: shape of the observation to work with
         :param latent_observation_dim: latent observation dimension (m in paper)
         :param output_dim: dimensionality of model output
         :param num_basis: number of basis matrices (k in paper)
         :param bandwidth: bandwidth of transition sub-matrices (b in paper)
+        :param trans_net_hidden_units: hidden units for transition network
         :param never_invalid: if you know a-priori that the observation valid flag will always be positive you can set
                               this to true for slightly increased performance (obs_valid mask will be ignored)
+        :param cell_type: type of cell to use "rkn" for our approach, "lstm" or "gru" for baselines
         """
         super().__init__()
 
@@ -40,10 +42,21 @@ class RKN(k.models.Model):
             k.layers.Dense(self._lod, activation=lambda x: k.activations.elu(x) + 1))
 
         # build transition
-        self._cell = RKNTransitionCell(self._lsd, self._lod,
-                                       number_of_basis=num_basis,
-                                       bandwidth=bandwidth,
-                                       never_invalid=never_invalid)
+        if cell_type.lower() == "rkn":
+            self._cell = RKNTransitionCell(self._lsd, self._lod,
+                                           number_of_basis=num_basis,
+                                           bandwidth=bandwidth,
+                                           trans_net_hidden_units=trans_net_hidden_units,
+                                           never_invalid=never_invalid)
+        elif cell_type.lower() == "lstm":
+            print("Running LSTM Baseline")
+            self._cell = k.layers.LSTMCell(2 * self._lsd)
+        elif cell_type.lower() == "gru":
+            print("Running GRU Baseline")
+            self._cell = k.layers.GRUCell(2 * self._lsd)
+        else:
+            raise AssertionError("Invalid Cell type, needs tp be 'rkn', 'lstm' or 'gru'")
+
         self._layer_rkn = k.layers.RNN(self._cell, return_sequences=True)
 
         self._dec_hidden = self._time_distribute_layers(self.build_decoder_hidden())

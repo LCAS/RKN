@@ -63,8 +63,8 @@ data = Pendulum(24, observation_mode=Pendulum.OBSERVATION_MODE_LINE,
                 seed=0,
                 pendulum_params=pend_params)
 
-train_obs, train_obs_valid, train_targets = generate_imputation_data_set(data, 1000, 150, seed=42)
-test_obs, test_obs_valid, test_targets = generate_imputation_data_set(data, 250, 150, seed=23541)
+train_obs, train_obs_valid, train_targets = generate_imputation_data_set(data, 2000, 75, seed=42)
+test_obs, test_obs_valid, test_targets = generate_imputation_data_set(data, 1000, 75, seed=23541)
 
 # Build Model
 rkn = PendulumImageImputationRKN(observation_shape=train_obs.shape[-3:], latent_observation_dim=15,
@@ -74,7 +74,7 @@ rkn.compile(optimizer=k.optimizers.Adam(clipnorm=5.0),
 
 # Train Model
 rkn.fit((train_obs, train_obs_valid),
-        train_targets, batch_size=25, epochs=1000,
+        train_targets, batch_size=50, epochs=500,
         validation_data=((test_obs, test_obs_valid), test_targets))
 
 

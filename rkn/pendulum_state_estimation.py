@@ -47,8 +47,8 @@ data = Pendulum(24, observation_mode=Pendulum.OBSERVATION_MODE_LINE,
                 seed=0,
                 pendulum_params=pend_params)
 
-train_obs, train_targets = generate_pendulum_filter_dataset(data, 1000, 150, 42)
-test_obs, test_targets = generate_pendulum_filter_dataset(data, 250, 150, 12312)
+train_obs, train_targets = generate_pendulum_filter_dataset(data, 2000, 75, np.random.randint(100000000))
+test_obs, test_targets = generate_pendulum_filter_dataset(data, 1000, 75, np.random.randint(10000000))
 
 # Build Model
 rkn = PendulumStateEstemRKN(observation_shape=train_obs.shape[-3:], latent_observation_dim=15, output_dim=2, num_basis=15,
@@ -56,7 +56,7 @@ rkn = PendulumStateEstemRKN(observation_shape=train_obs.shape[-3:], latent_obser
 rkn.compile(optimizer=k.optimizers.Adam(clipnorm=5.0), loss=rkn.gaussian_nll, metrics=[rkn.rmse])
 
 # Train Model
-rkn.fit(train_obs, train_targets, batch_size=25, epochs=1000, validation_data=(test_obs, test_targets))
+rkn.fit(train_obs, train_targets, batch_size=50, epochs=500, validation_data=(test_obs, test_targets), verbose=2)
 
 
 

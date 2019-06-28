@@ -164,7 +164,7 @@ class TransitionNet:
     def weights(self):
         weigths = self._out_layer.trainable_weights
         for hidden_layer in self._hidden_layers:
-            weigths += hidden_layer.get_weights()
+            weigths += hidden_layer.trainable_weights
         return weigths
 
 

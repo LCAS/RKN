@@ -363,7 +363,7 @@ class RKNTransitionCell(k.layers.Layer):
         new_covar_lower = covar_lower - q_lower * covar_side
         new_covar_side = covar_factor * covar_side
         if self._debug:
-            return new_mean, [new_covar_upper, new_covar_lower. new_covar_side], [q_upper, q_lower]
+            return new_mean, [new_covar_upper, new_covar_lower, new_covar_side], [q_upper, q_lower]
         else:
             return new_mean, [new_covar_upper, new_covar_lower, new_covar_side]
 

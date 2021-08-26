@@ -19,7 +19,7 @@ class LayerNormalization(k.layers.Layer):
         :return:
         """
         norm_axis = [i + 1 for i in range(len(inputs.get_shape()) - 1)]
-        mean, var = tf.nn.moments(inputs, axes=norm_axis, keep_dims=True)
+        mean, var = tf.nn.moments(inputs, axes=norm_axis, keepdims=True)
         return tf.nn.batch_normalization(inputs,
                                          mean=mean, variance=var, variance_epsilon=1e-12,
                                          offset=self._offset, scale=self._scale)

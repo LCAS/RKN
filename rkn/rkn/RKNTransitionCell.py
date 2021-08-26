@@ -225,7 +225,7 @@ class RKNTransitionCell(k.layers.Layer):
         tm_22_full = self.add_weight(shape=[self._num_basis, self._lod, self._lod], name="tm_22_basis",
                                      initializer=k.initializers.Constant(tm_22_init))
 
-        tm_11, tm_12, tm_21, tm_22 = (tf.matrix_band_part(x, self._bandwidth, self._bandwidth) for x in
+        tm_11, tm_12, tm_21, tm_22 = (tf.linalg.band_part(x, self._bandwidth, self._bandwidth) for x in
                                       [tm_11_full, tm_12_full, tm_21_full, tm_22_full])
         self._basis_matrices = tf.concat([tf.concat([tm_11, tm_12], -1),
                                           tf.concat([tm_21, tm_22], -1)], -2)

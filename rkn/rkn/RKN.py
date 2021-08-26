@@ -35,7 +35,7 @@ class RKN(k.models.Model):
         # nan
         self._layer_w_mean = k.layers.TimeDistributed(
             k.layers.Dense(self._lod, activation=k.activations.linear,
-                           bias_initializer=k.initializers.normal(stddev=0.05)))
+                           bias_initializer=k.initializers.RandomNormal(stddev=0.05)))
         self._layer_w_mean_norm = k.layers.TimeDistributed(k.layers.Lambda(
             lambda x: x / tf.norm(x, ord='euclidean', axis=-1, keepdims=True)))
         self._layer_w_covar = k.layers.TimeDistributed(
@@ -124,6 +124,7 @@ class RKN(k.models.Model):
             assert self._never_invalid, "If invalid inputs are possible, obs_valid mask needs to be provided"
             img_inputs = inputs
             obs_valid = tf.ones([tf.shape(img_inputs)[0], tf.shape(img_inputs)[1], 1])
+        img_inputs = tf.cast(img_inputs, tf.float32)
 
         # encoder
         enc_last_hidden = self._prop_through_layers(img_inputs, self._enc_hidden_layers)
@@ -155,7 +156,7 @@ class RKN(k.models.Model):
         """
         pred_mean, pred_var = pred_mean_var[..., :self._output_dim], pred_mean_var[..., self._output_dim:]
         pred_var += 1e-8
-        element_wise_nll = 0.5 * (np.log(2 * np.pi) + tf.log(pred_var) + ((target - pred_mean)**2) / pred_var)
+        element_wise_nll = 0.5 * (np.log(2 * np.pi) + tf.math.log(pred_var) + ((target - pred_mean)**2) / pred_var)
         sample_wise_error = tf.reduce_sum(element_wise_nll, axis=-1)
         return tf.reduce_mean(sample_wise_error)
 
@@ -178,9 +179,9 @@ class RKN(k.models.Model):
         :return: Binary Crossentropy between targets and prediction
         """
         if uint8_targets:
-            targets = targets / 255.0
+            targets = tf.cast(targets,tf.float32) / 255.0
         point_wise_error = - (
-                    targets * tf.log(predictions + 1e-12) + (1 - targets) * tf.log(1 - predictions + 1e-12))
+                    targets * tf.math.log(predictions + 1e-12) + (1 - targets) * tf.math.log(1 - predictions + 1e-12))
         red_axis = [i + 2 for i in range(len(targets.get_shape()) - 2)]
         sample_wise_error = tf.reduce_sum(point_wise_error, axis=red_axis)
         return tf.reduce_mean(sample_wise_error)

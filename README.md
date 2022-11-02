@@ -2,6 +2,7 @@
 
 This is a new, cleaned up version of the Code used for the experiments described in the paper. We highly recommend you use this version, however, you can find the old version in the branch "icml_submission". 
 
+**Update:** We now also privde a pytorch version of the base model: https://github.com/ALRhub/rkn_share 
 
 ## Code
 
